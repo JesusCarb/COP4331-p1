@@ -13,12 +13,25 @@
 	} 
 	else
 	{
-		$stmt = $conn->prepare("INSERT into Users (FirstName,LastName,Login,Password) VALUES(?,?,?,?)");
-		$stmt->bind_param("ssss", $FirstName, $LastName, $Login, $Password);
-		$stmt->execute();
-		$stmt->close();
-		$conn->close();
-		returnWithError("");
+		$check = $conn->prepare("SELECT Login FROM Users WHERE Login = ?");
+		$check->bind_param("s", $inData["Login"]);
+		$check->execute();
+		$checkLogin = $check->get_result();
+		
+		// prevents existing username
+		if ($row = $checkLogin->fetch_assoc())
+		{
+			returnWithError("Username Unavailable");
+		}
+		else
+		{
+			$stmt = $conn->prepare("INSERT into Users (FirstName,LastName,Login,Password) VALUES(?,?,?,?)");
+			$stmt->bind_param("ssss", $FirstName, $LastName, $Login, $Password);
+			$stmt->execute();
+			$stmt->close();
+			$conn->close();
+			returnWithError("");
+		}
 	}
 
 	function getRequestInfo()
