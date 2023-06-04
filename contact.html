@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact List</title>
+  <link rel="stylesheet" href="contact.css">
+</head>
+
+<body>
+  <header class="header">
+    <h2 class="logo"><img src="logo-removebg.png"></h2>
+    <h2>Welcome Username</h2>
+    <button class="logout">Logout</button>
+  </header>
+
+  <div class="container">
+    <form action="" class="searchBar">
+      <input type="text" placeholder="Find Friends" name="q">
+      <button type="submit" onclick=""><img src="search-icon-png-21.png"></button>
+    </form>
+    
+    <div class="contactTable">
+      <table>
+        <tr>
+          <th>FIRST NAME</th>
+          <th>LAST NAME</th>
+          <th>EMAIL</th>
+          <th>PHONE#</th>
+        </tr>
+        <!-- Add your contact table rows here -->
+      </table>
+    </div>
+
+    <!-- Add Contact button -->
+    <div class="add-contact">
+      <button onclick="toggleAddContact()"><ion-icon name="person-add-outline"></ion-icon></button>
+    </div>
+
+    <!-- Add Contact info -->
+    <div class="addContacts" style="display: none;">
+      <form id="addMe" action="" method="post">
+        <input type="text" id="contactTextFirst" placeholder="First Name" required>
+        <input type="text" id="contactTextLast" placeholder="Last Name" required>
+        <input type="text" id="contactTextNumber" placeholder="XXX-XXX-XXXX" required
+          pattern="^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4}$">
+        <input type="text" id="contactTextEmail" placeholder="name@email.com"
+          pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" required>
+        <button type="button" id="addContactButton" class="buttons font" onclick="addContact()"> Add Contact
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  
+
+</body>
+</html>
