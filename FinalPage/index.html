@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COP 4331 Small Project</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <header>
+    <!-- logo top left -->
+    <h2 class="logo"><img src="/images/logo-removebg.png"></h2>
+    <nav class="navigation"> 
+      <a href="">Meet the team</a>
+      <button class="btnLogin-popup">Login</button>
+    </nav>
+  </header>
+<!-- Login  -->
+  <div class="wrapper">
+    <span class="icon-close"><ion-icon name="close"></ion-icon></span>
+    <div class="form-box login">
+      <!-- Login Title -->
+      <h2>Login</h2>
+      <form action="#">
+        <!--Email/Username -->
+          <div class="input-box">
+            <span class="icon"><ion-icon name="mail"></ion-icon></span>
+            <input type="email"id = "loginUsername" required>
+            <label>Email</label>
+          </div>
+         <!--password FIELD-->
+          <div class="input-box">
+            <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+            <input type="password" id = "loginPassword" required>
+            <label>Password</label>
+          </div>
+        <div class="remember">
+          <label ><input type="checkbox">Remember me</label>
+        </div>
+        
+        <!-- BUTTON -->
+        <button type="submit" id = "loginLaunch" class="btn" onclick= "doLogin();" >Login</button>
+        <span id = "loginResult"></span>
+
+        <!--Register link -->
+        <div class="login-register">
+          <p>Don't have an account?<a href="#" class="register-link">Register</a></p>
+        </div>
+      </form>
+    </div>
+
+<!-- Register -->
+    <div class="form-box register">
+      <!-- Register Title -->
+      <h2>Registration </h2>
+      <form action="#">
+        <!--USERNAME field -->
+        <div class="input-box">
+          <span class="icon"><ion-icon name="person"></ion-icon></span>
+          <input type="text" id = "registerUsername"required>
+          <label>Username</label>
+        </div>
+          <!--EMAIL Field -->
+          <div class="input-box">
+            <span class="icon"><ion-icon name="mail"></ion-icon></span>
+            <input type="email" id = "registerEmail" required>
+            <label>Email</label>
+          </div>
+          <!--Login Button -->
+          <div class="input-box">
+            <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+            <input type="password" id = "registerPassword" required>
+            <label>Password</label>
+          </div>
+        <div class="remember">
+          <label ><input type="checkbox">I agree to the terms & conditons</label>
+        </div>
+        <button type="submit" id= "registerLaunch" class="btn" onclick = "doRegister();">Register</button>
+        <!--Login link -->
+        <div class="login-register">
+        <span id = "registerResult"></span>
+
+          <p>Already have an account?<a href="#" class="login-link">Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="/js/script.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/     ionicons.js"></script>
+
+</body>
+
+</html>
