@@ -4,8 +4,12 @@ const registerLink = document.querySelector('.register-link');
 const btnPopup = document.querySelector('.btnLogin-popup');
 const iconClose = document.querySelector('.icon-close');
 
-const urlBase = '/LAMPAPI';
+const urlBase = 'http://jesustestserver.xyz/LAMPAPI';
 const extension = 'php';
+
+let ID = 0;
+let firstName = "";
+let lastName = "";
 
 registerLink.addEventListener('click', ()=> {
   wrapper.classList.add('active');
@@ -142,7 +146,7 @@ function readCookie()
 
 function doLogin()
 {
-	userId = 0;
+	ID = 0;
 	firstName = "";
 	lastName = "";
 	
@@ -166,26 +170,27 @@ function doLogin()
 	try
 	{
 		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				let jsonObject = JSON.parse( xhr.responseText );
-				userId = jsonObject.id;
-		
-				if( userId < 1 )
-				{		
-					document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
-					return;
-				}
-		
-				firstName = jsonObject.firstName;
-				lastName = jsonObject.lastName;
+    {
+      if (this.readyState == 4 && this.status == 200) 
+      {
+        let jsonObject = JSON.parse( xhr.responseText );
+        console.log(jsonObject);
+        ID = jsonObject.id;
+    
+        if( ID < 1 )
+        {		
+          document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
+          return;
+        }
+    
+        firstName = jsonObject.FirstName;
+        lastName = jsonObject.LastName;
 
-				saveCookie();
-	
-				window.location.href = "color.html";
-			}
-		};
+        saveCookie();
+  
+        window.location.href = "contact.html";
+      }
+    };
 		xhr.send(jsonPayload);
 	}
 	catch(err)
