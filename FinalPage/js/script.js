@@ -11,6 +11,7 @@ let ID = 0;
 let firstName = "";
 let lastName = "";
 
+
 registerLink.addEventListener('click', ()=> {
   wrapper.classList.add('active');
 });
@@ -64,22 +65,22 @@ function addContact() {
   let phonenumber = document.getElementById("contactTextNumber").value;
   let emailaddress = document.getElementById("contactTextEmail").value;
 
-  if (!validAddContact(firstname, lastname, phonenumber, emailaddress)) {
-      console.log("INVALID FIRST NAME, LAST NAME, PHONE, OR EMAIL SUBMITTED");
-      return;
-  }
-  let tmp = {
-      firstName: firstname,
-      lastName: lastname,
-      phoneNumber: phonenumber,
-      emailAddress: emailaddress,
-      userId: userId
-  };
+  // if (!validAddContact(firstname, lastname, phonenumber, emailaddress)) {
+  //     console.log("INVALID FIRST NAME, LAST NAME, PHONE, OR EMAIL SUBMITTED");
+  //     return;
+  // }
 
+  let tmp = {
+      FirstName: firstname,
+      LastName: lastname,
+      Phone: phonenumber,
+      Email: emailaddress,
+      ID: ID
+  };
 
   let jsonPayload = JSON.stringify(tmp);
 
-  let url = urlBase + '/AddContacts.' + extension;
+  let url = urlBase + '/AddContact.' + extension;
 
   let xhr = new XMLHttpRequest();
   xhr.open("POST", url, true);
@@ -91,8 +92,8 @@ function addContact() {
               // Clear input fields in form 
               document.getElementById("addMe").reset();
               // reload contacts table and switch view to show
-              loadContacts();
-              showTable();
+              // loadContacts();
+              
           }
       };
       xhr.send(jsonPayload);
@@ -107,13 +108,14 @@ function saveCookie() {
     let date = new Date();
     date.setTime(date.getTime() + (minutes * 60 * 1000));
 
-    document.cookie = "firstName=" + firstName + ",lastName=" + lastName + ",userId=" + userId + ";expires=" + date.toGMTString();
+    document.cookie = "firstName=" + firstName + ",lastName=" + lastName + ", ID=" + ID + ";expires=" + date.toGMTString();
 }
 
 function readCookie()
 {
-  userId = -1;
+  ID = -1;
   let data = document.cookie;
+  console.log(data);
   let splits = data.split(",");
 
   for(var i = 0; i < splits.length; i++) 
@@ -128,136 +130,309 @@ function readCookie()
       {
         lastName = tokens[1];
       }
-      else if( tokens[0] == "userId" )
+      else if( tokens[0] == "ID" )
       {
-        userId = parseInt( tokens[1].trim() );
+        ID = parseInt( tokens[1].trim() );
       }
   }
   
-  if( userId < 0 )
+  if( ID < 0 )
   {
     window.location.href = "index.html";
   }
   else
   {
-    document.getElementById("userName").innerHTML = "Logged in as " + firstName + " " + lastName;
+    document.getElementById("userName").innerHTML = "Welcome " + firstName + " " + lastName + " " + ID;
   }
 }
 
 function doLogin()
 {
-	ID = 0;
-	firstName = "";
-	lastName = "";
-	
-	let login = document.getElementById("loginUsername").value;
-	let password = document.getElementById("loginPassword").value;
-//	var hash = md5( password ); 
-	
-	// document.getElementById("loginLaunch").innerHTML = "";
+    ID = 0;
+    firstName = "";
+    lastName = "";
+    
+    let login = document.getElementById("loginUsername").value;
+    let password = document.getElementById("loginPassword").value;
+    // var hash = md5( password ); 
+    
+    // document.getElementById("loginLaunch").innerHTML = "";
 
-	let tmp = {login:login,password:password};
-//	var tmp = {login:login,password:hash};
-	let jsonPayload = JSON.stringify( tmp );
-
-	console.log(jsonPayload);
-
-	let url = urlBase + '/Login.' + extension;
-
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function() 
+    let tmp = new Object();
+    tmp.Login = login;
+    tmp.Password = password;
+    
+    if (login === "" || password === "")
     {
-      if (this.readyState == 4 && this.status == 200) 
+      console.log("check");
+      document.getElementById("loginResult").innerHTML = "Enter a Username and Password";
+      return;
+    }
+    // {"login":login,"password":password};
+  //	var tmp = {login:login,password:hash};
+    let jsonPayload = JSON.stringify( tmp );
+
+    console.log(isJsonString(jsonPayload));
+
+    let url = urlBase + '/Login.' + extension;
+    console.log("url " + url);
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    try
+    {
+      xhr.onreadystatechange = function() 
       {
-        let jsonObject = JSON.parse( xhr.responseText );
-        console.log(jsonObject);
-        ID = jsonObject.id;
+        if (this.readyState == 4 && this.status == 200) 
+        {
+          let jsonObject = JSON.parse( xhr.responseText );
+
+          console.log(jsonObject);
+
+          ID = jsonObject.ID;
+          
+          if( ID < 1 )
+          {		
+            document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
+            return;
+          }
+      
+          firstName = jsonObject.FirstName;
+          lastName = jsonObject.LastName;
+
+          saveCookie();
     
-        if( ID < 1 )
-        {		
-          document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
-          return;
+          window.location.href = "contact.html";
         }
+      };
+      xhr.send(jsonPayload);
+    }
+    catch(err)
+    {
+      document.getElementById("loginResult").innerHTML = err.message;
+    }
+
     
-        firstName = jsonObject.FirstName;
-        lastName = jsonObject.LastName;
-
-        saveCookie();
-  
-        window.location.href = "contact.html";
-      }
-    };
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("loginResult").innerHTML = err.message;
-	}
-
-  
 }
 
-function doRegister()
+function isJsonString(str) {
+  try {
+      JSON.parse(str);
+  } catch (e) {
+      return false;
+  }
+  return true;
+}
+
+function doSignup(){
+
+  let firstName = document.getElementById("registerFirst").value;
+  let lastName = document.getElementById("registerLast").value;
+
+  let username = document.getElementById("registerUsername").value;
+  let password = document.getElementById("registerPassword").value;
+
+  // if (!validSignUpForm(firstName, lastName, username, password)) {
+  //     document.getElementById("signupResult").innerHTML = "invalid signup";
+  //     return;
+  // }
+
+  // var hash = md5(password);
+
+  document.getElementById("signupResult").innerHTML = "";
+
+  let tmp = new Object();
+  tmp.FirstName = firstName;
+  tmp.LastName = lastName;
+  tmp.Login = username;
+  tmp.Password = password;
+
+  let jsonPayload = JSON.stringify(tmp);
+
+  console.log(jsonPayload);
+
+  let url = urlBase + '/Register.' + extension;
+  console.log("url " + url);
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try {
+      xhr.onreadystatechange = function () {
+
+          if (this.readyState == 4 && this.status == 200 ) {
+              let jsonObject = JSON.parse(xhr.responseText);
+              console.log(jsonObject);
+
+              ID = jsonObject.id;
+              if (jsonObject.error == "Username Unavailable")
+              {
+                document.getElementById("signupResult").innerHTML = "Username Unavailable";
+                return;
+              }
+
+              document.getElementById("signupResult").innerHTML = "User added";
+              firstName = jsonObject.firstName;
+              lastName = jsonObject.lastName;
+              saveCookie();
+          }
+      };
+
+      xhr.send(jsonPayload);
+  } catch (err) {
+      document.getElementById("signupResult").innerHTML = err.message;
+  }
+}
+
+function validSignUpForm(fName, lName, user, pass) {
+
+  var fNameErr = lNameErr = userErr = passErr = true;
+
+  if (fName == "") {
+      console.log("FIRST NAME IS BLANK");
+  }
+  else {
+      console.log("first name IS VALID");
+      fNameErr = false;
+  }
+
+  if (lName == "") {
+      console.log("LAST NAME IS BLANK");
+  }
+  else {
+      console.log("LAST name IS VALID");
+      lNameErr = false;
+  }
+
+  if (user == "") {
+      console.log("USERNAME IS BLANK");
+  }
+  else {
+      var regex = /(?=.[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
+
+      if (regex.test(user) == false) {
+          console.log("USERNAME IS NOT VALID");
+      }
+
+      else {
+
+          console.log("USERNAME IS VALID");
+          userErr = false;
+      }
+  }
+
+  if (pass == "") {
+      console.log("PASSWORD IS BLANK");
+  }
+  else {
+      var regex = /(?=.\d)(?=.[A-Za-z])(?=.[!@#$%^&*]).{8,32}/;
+
+      if (regex.test(pass) == false) {
+          console.log("PASSWORD IS NOT VALID");
+      }
+
+      else {
+
+          console.log("PASSWORD IS VALID");
+          passErr = false;
+      }
+  }
+
+  if ((fNameErr || lNameErr || userErr || passErr) == true) {
+      return false;
+
+  }
+
+  return true;
+}
+
+function doLogout()
 {
-	userId = 0;
-	firstName = "";
-	lastName = "";
-	
-	let login = document.getElementById("registerUsername").value;
-	let password = document.getElementById("registerPassword").value;
-  let email = document.getElementById("registerEmail").value;
-//	var hash = md5( password ); 
-	
-	// document.getElementById("loginLaunch").innerHTML = "";
+  console.log("LOGOUTCHECK");
+  ID = 0;
+  firstName = "";
+  lastName = "";
 
-	let tmp = {login:login,email:email,password:password};
-//	var tmp = {login:login,password:hash};
-	let jsonPayload = JSON.stringify( tmp );
+	document.cookie = "firstName= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
-	console.log(jsonPayload);
+  window.location.href = "index.html?#";
 
-	let url = urlBase + '/Register.' + extension;
+}
+
+function maketable()
+{
+  let table = document.getElementById("contactTable");
+  let rowNode = document.createElement("tr");
+  let textNode = document.createTextNode("")
+
+
+}
+
+function loadContacts() {
+
+  let search = document.getElementById("search").value;
+
+  let tmp = {
+      search: search,
+      ID: ID
+  };
+
+  let jsonPayload = JSON.stringify(tmp);
+  console.log(jsonPayload);
+
+  let url = urlBase + '/SearchContacts.' + extension;
 
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-	try
-	{
-		xhr.onreadystatechange = function() 
-		{
-			if (this.readyState == 4 && this.status == 200) 
-			{
-				let jsonObject = JSON.parse( xhr.responseText );
-				userId = jsonObject.id;
-		
-				if( userId < 1 )
-				{		
-					document.getElementById("registerResult").innerHTML = "User/Password combination incorrect";
-					return;
-				}
-		
-				firstName = jsonObject.firstName;
-				lastName = jsonObject.lastName;
 
-				saveCookie();
-	
-				window.location.href = "color.html";
-			}
-		};
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById("registerResult").innerHTML = err.message;
-	}
+  try 
+  {
+    xhr.onreadystatechange = function () {
 
-  
+        if (this.readyState == 4 && this.status == 200) {
+            let jsonObject = JSON.parse(xhr.responseText);
+
+            console.log(jsonObject);
+            
+            if (jsonObject.error == "No Contacts Found") {
+                console.log(jsonObject.error);
+                return;
+            }
+
+            LoadTable(jsonObject);
+            
+        }
+    };
+      xhr.send(jsonPayload);
+  } catch (err) {
+    console.log(err.message);
+}
 }
 
+function LoadTable(obj)
+{
+  console.log(obj.FirstName);
+	const table = document.getElementById("tbody");
+	for(var i in obj.results)
+  {
+    let row = table.insertRow();
+
+		let first = row.insertCell(0);
+		first.innerHTML = i.FirstName;
+
+		let last = row.insertCell(1);
+		last.innerHTML = i.LastName;
+
+		let email = row.insertCell(2);
+		first.innerHTML = i.Email;
+
+		let phone = row.insertCell(3);
+		phone.innerHTML = i.Phone;
+  }
+
+}
 
 
 

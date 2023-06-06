@@ -6,31 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact List</title>
   <link rel="stylesheet" href="/css/contact.css">
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() 
+    {
+      readCookie();
+    }, false);
+    </script>
+    
 </head>
 
 <body>
   <header class="header">
     <h2 class="logo"><img src="/images/logo-removebg.png"></h2>
-    <h2>Welcome Username</h2>
-    <button class="logout">Logout</button>
+    <span id="userName" style = "color:white"></span><br />
+    <button class = "logout" onclick ="doLogout()">Logout</button><br />
   </header>
 
   <div class="container">
     <form action="" class="searchBar">
-      <input type="text" placeholder="Find Friends" name="q">
-      <button type="submit" onclick=""><img src="/images/search-icon-png-21.png"></button>
+      <input type="text" id = "search" placeholder="Find Friends" name="q">
+      <button type="button" onclick="loadContacts()">  <img src="/images/search-icon-png-21.png"> </button>
     </form>
     
     <div class="contactTable">
-      <table>
+      <table id="contacts" cellpadding="0" cellspacing="0" border="0">        
         <tr>
-          <th>FIRST NAME</th>
-          <th>LAST NAME</th>
+          <th>FIRSTNAME</th>
+          <th>LASTNAME</th>
           <th>EMAIL</th>
           <th>PHONE#</th>
         </tr>
         <!-- Add your contact table rows here -->
-      </table>
+        <tbody id = "tbody"></tbody>
+			</table>    
     </div>
 
     <!-- Add Contact button -->

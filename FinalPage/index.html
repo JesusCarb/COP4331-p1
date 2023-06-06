@@ -26,17 +26,17 @@
       <h2>Login</h2>
       <form action="#">
         <!--Email/Username -->
-          <div class="input-box">
-            <span class="icon"><ion-icon name="mail"></ion-icon></span>
-            <input type="email"id = "loginUsername" required>
-            <label>Email</label>
-          </div>
+        <div class="input-box">
+          <span class="icon"><ion-icon name="mail"></ion-icon></span>
+          <input type="text"id = "loginUsername" placeholder= "Username" style="color:white"required>
+          <!-- <label>Username</label> -->
+        </div>
          <!--password FIELD-->
-          <div class="input-box">
-            <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-            <input type="password" id = "loginPassword" required>
-            <label>Password</label>
-          </div>
+        <div class="input-box">
+          <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+          <input type="password" id = "loginPassword" placeholder= "password"style="color:white"required>
+          <!-- <label>Password</label> -->
+        </div>
         <div class="remember">
           <label ><input type="checkbox">Remember me</label>
         </div>
@@ -57,28 +57,38 @@
       <!-- Register Title -->
       <h2>Registration </h2>
       <form action="#">
+        <!-- First Field -->
+        <div class="input-box" >
+          <span class="icon"><ion-icon name="person"></ion-icon></span>
+          <input type="text" id="registerFirst" placeholder="First Name"style="color:white" required>
+          <!-- <label>First Name</label> -->
+        </div>
+        <!-- <Last> Field -->
+        <div class="input-box" >
+          <span class="icon"><ion-icon name="person"></ion-icon></span>
+          <input type="text" id="registerLast" placeholder= "Last Name" style="color:white"required>
+          <!-- <label>Last Name</label> -->
+        </div>
+
         <!--USERNAME field -->
         <div class="input-box">
           <span class="icon"><ion-icon name="person"></ion-icon></span>
-          <input type="text" id = "registerUsername"required>
-          <label>Username</label>
+          <input type="text" id = "registerUsername" placeholder= "Username"style="color:white"required>
+          <!-- <label>Username</label> -->
         </div>
-          <!--EMAIL Field -->
-          <div class="input-box">
-            <span class="icon"><ion-icon name="mail"></ion-icon></span>
-            <input type="email" id = "registerEmail" required>
-            <label>Email</label>
-          </div>
+
           <!--Login Button -->
           <div class="input-box">
             <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-            <input type="password" id = "registerPassword" required>
-            <label>Password</label>
+            <input type="password" id = "registerPassword" placeholder= "Password" style="color:white"required>
+            <!-- <label>Password</label> -->
           </div>
         <div class="remember">
           <label ><input type="checkbox">I agree to the terms & conditons</label>
         </div>
-        <button type="submit" id= "registerLaunch" class="btn" onclick = "doRegister();">Register</button>
+        <button type="submit" id= "registerLaunch" class="btn" onclick = "doSignup();">Register</button>
+        <span class="text" style="color:rgb(203, 55, 21); font-family: 'Montserrat';" id="signupResult"></span>
+
         <!--Login link -->
         <div class="login-register">
         <span id = "registerResult"></span>
