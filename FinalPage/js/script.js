@@ -57,7 +57,6 @@ function toggleAddContact() {
   }
 }
 
-
 function addContact() {
 
   let firstname = document.getElementById("contactTextFirst").value;
@@ -65,10 +64,6 @@ function addContact() {
   let phonenumber = document.getElementById("contactTextNumber").value;
   let emailaddress = document.getElementById("contactTextEmail").value;
 
-  // if (!validAddContact(firstname, lastname, phonenumber, emailaddress)) {
-  //     console.log("INVALID FIRST NAME, LAST NAME, PHONE, OR EMAIL SUBMITTED");
-  //     return;
-  // }
 
   let tmp = {
       FirstName: firstname,
@@ -77,6 +72,12 @@ function addContact() {
       Email: emailaddress,
       ID: ID
   };
+
+  if(firstname == "" || lastname == "" || phonenumber == "" || emailaddress == "" )
+  {
+    document.getElementById("addContactResult").innerHTML = "Fill All Inquiries";
+    return;
+  }
 
   let jsonPayload = JSON.stringify(tmp);
 
@@ -89,6 +90,8 @@ function addContact() {
       xhr.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
               console.log("Contact has been added");
+              document.getElementById("addContactResult").innerHTML = "Contact has been added";
+
               // Clear input fields in form 
               document.getElementById("addMe").reset();
               // reload contacts table and switch view to show
@@ -101,7 +104,6 @@ function addContact() {
       console.log(err.message);
   }
 }
-
 
 function saveCookie() {
     let minutes = 20;
@@ -154,9 +156,7 @@ function doLogin()
     
     let login = document.getElementById("loginUsername").value;
     let password = document.getElementById("loginPassword").value;
-    // var hash = md5( password ); 
     
-    // document.getElementById("loginLaunch").innerHTML = "";
 
     let tmp = new Object();
     tmp.Login = login;
@@ -168,8 +168,7 @@ function doLogin()
       document.getElementById("loginResult").innerHTML = "Enter a Username and Password";
       return;
     }
-    // {"login":login,"password":password};
-  //	var tmp = {login:login,password:hash};
+
     let jsonPayload = JSON.stringify( tmp );
 
     console.log(isJsonString(jsonPayload));
@@ -232,13 +231,6 @@ function doSignup(){
   let username = document.getElementById("registerUsername").value;
   let password = document.getElementById("registerPassword").value;
 
-  // if (!validSignUpForm(firstName, lastName, username, password)) {
-  //     document.getElementById("signupResult").innerHTML = "invalid signup";
-  //     return;
-  // }
-
-  // var hash = md5(password);
-
   document.getElementById("signupResult").innerHTML = "";
 
   let tmp = new Object();
@@ -246,6 +238,23 @@ function doSignup(){
   tmp.LastName = lastName;
   tmp.Login = username;
   tmp.Password = password;
+
+  registerBox = document.getElementById("registerBox");
+  console.log(registerBox.checked);
+
+  if(registerBox.checked == false)
+  {
+    document.getElementById("signupResult").innerHTML = "Please Accept Terms & Conditions";
+    return;
+  }
+
+  console.log(username);
+
+  if(username == "" || password == "" || firstName == "" || lastName == "" )
+  {
+    document.getElementById("signupResult").innerHTML = "Fill All Inquiries";
+    return;
+  }
 
   let jsonPayload = JSON.stringify(tmp);
 
@@ -285,68 +294,6 @@ function doSignup(){
   }
 }
 
-function validSignUpForm(fName, lName, user, pass) {
-
-  var fNameErr = lNameErr = userErr = passErr = true;
-
-  if (fName == "") {
-      console.log("FIRST NAME IS BLANK");
-  }
-  else {
-      console.log("first name IS VALID");
-      fNameErr = false;
-  }
-
-  if (lName == "") {
-      console.log("LAST NAME IS BLANK");
-  }
-  else {
-      console.log("LAST name IS VALID");
-      lNameErr = false;
-  }
-
-  if (user == "") {
-      console.log("USERNAME IS BLANK");
-  }
-  else {
-      var regex = /(?=.[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
-
-      if (regex.test(user) == false) {
-          console.log("USERNAME IS NOT VALID");
-      }
-
-      else {
-
-          console.log("USERNAME IS VALID");
-          userErr = false;
-      }
-  }
-
-  if (pass == "") {
-      console.log("PASSWORD IS BLANK");
-  }
-  else {
-      var regex = /(?=.\d)(?=.[A-Za-z])(?=.[!@#$%^&*]).{8,32}/;
-
-      if (regex.test(pass) == false) {
-          console.log("PASSWORD IS NOT VALID");
-      }
-
-      else {
-
-          console.log("PASSWORD IS VALID");
-          passErr = false;
-      }
-  }
-
-  if ((fNameErr || lNameErr || userErr || passErr) == true) {
-      return false;
-
-  }
-
-  return true;
-}
-
 function doLogout()
 {
   console.log("LOGOUTCHECK");
@@ -357,7 +304,6 @@ function doLogout()
 	document.cookie = "firstName= ; expires = Thu, 01 Jan 1970 00:00:00 GMT";
 
   window.location.href = "index.html?#";
-
 }
 
 function maketable()
@@ -381,6 +327,11 @@ function loadContacts() {
   let jsonPayload = JSON.stringify(tmp);
   console.log(jsonPayload);
 
+  // if (search == "")
+  // {
+  //   return;
+  // }
+
   let url = urlBase + '/SearchContacts.' + extension;
 
 	let xhr = new XMLHttpRequest();
@@ -393,44 +344,64 @@ function loadContacts() {
 
         if (this.readyState == 4 && this.status == 200) {
             let jsonObject = JSON.parse(xhr.responseText);
-
             console.log(jsonObject);
-            
-            if (jsonObject.error == "No Contacts Found") {
-                console.log(jsonObject.error);
+
+            if (jsonObject.error == "No Records Found") {
+                console.log("Quitting");
                 return;
             }
 
-            LoadTable(jsonObject);
+          LoadTable(jsonObject);
             
         }
     };
       xhr.send(jsonPayload);
   } catch (err) {
     console.log(err.message);
-}
+  }
 }
 
 function LoadTable(obj)
 {
-  console.log(obj.FirstName);
-	const table = document.getElementById("tbody");
-	for(var i in obj.results)
+
+  let vars = obj.results;
+  console.log(obj.results);
+  document.getElementById("tbody").innerHTML = "";
+  var body = document.getElementById("tbody")
+  
+	for(let i = 0; i < vars.length; i++)
   {
-    let row = table.insertRow();
+    console.log(i.FirstName);
+    let row = body.insertRow();
 
 		let first = row.insertCell(0);
-		first.innerHTML = i.FirstName;
+		first.innerHTML = vars[i].FirstName;
 
 		let last = row.insertCell(1);
-		last.innerHTML = i.LastName;
+		last.innerHTML = vars[i].LastName;
 
 		let email = row.insertCell(2);
-		first.innerHTML = i.Email;
+		email.innerHTML = vars[i].Email;
 
 		let phone = row.insertCell(3);
-		phone.innerHTML = i.Phone;
+		phone.innerHTML = vars[i].Phone;
+
+    let ID = row.insertCell(4);
+    ID.innerHTML = vars[i].ID;
+    ID.style.visibility = "collapse";
+    console.log(ID.innerHTML);
+
+    let del = row.insertCell(5);
+    var button = document.createElement("button");
+
+
+    const eButton = document.createElement('button');
+    eButton.innerText = "Edit";
+    const dButton = document.createElement('button');
+    dButton.innerText = "Delete";
+
   }
+
 
 }
 
